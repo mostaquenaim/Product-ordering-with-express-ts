@@ -31,4 +31,10 @@ const OrderSchema = new mongoose_1.Schema({
     price: { type: Number, required: true },
     quantity: { type: Number, required: true }
 });
+OrderSchema.methods.toJSON = function () {
+    const order = this.toObject();
+    delete order.__v;
+    delete order._id;
+    return order;
+};
 exports.Order = mongoose_1.default.model('Order', OrderSchema);

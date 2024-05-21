@@ -14,4 +14,12 @@ const OrderSchema: Schema = new Schema({
   quantity: { type: Number, required: true }
 });
 
+OrderSchema.methods.toJSON = function () {
+  const order = this.toObject();
+  delete order.__v;
+  delete order._id;
+
+  return order;
+};
+
 export const Order: Model<IOrder> = mongoose.model<IOrder>('Order', OrderSchema);
