@@ -11,90 +11,108 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const product_service_1 = require("./product.service");
+const product_validator_1 = require("./product.validator");
+const errorHandler_1 = require("../middlewares/errorHandler");
 class ProductController {
-    static createProduct(req, res) {
+    static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield product_service_1.ProductService.createProduct(req.body);
-                res.status(201).json(result);
-            }
-            catch (error) {
-                res.status(400).json({ success: false, message: error.message });
-            }
-        });
-    }
-    static getAllProducts(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { searchTerm } = req.query;
-                const result = yield product_service_1.ProductService.getAllProducts(searchTerm);
-                res.status(200).json({
+                yield product_validator_1.productSchema.validateAsync(req.body);
+                const product = yield product_service_1.ProductService.createProduct(req.body);
+                res.status(201).json({
                     success: true,
-                    message: 'Products fetched successfully!',
-                    data: result
+                    message: 'Product created successfully!',
+                    data: product
                 });
             }
             catch (error) {
-                res.status(500).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }
-    static getProductById(req, res) {
+    static getAllProducts(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield product_service_1.ProductService.getProductById(req.params.id);
-                if (result.success) {
-                    res.status(200).json(result);
-                }
-                else {
-                    res.status(404).json(result);
-                }
+                const products = yield product_service_1.ProductService.getAllProducts();
+                res.status(200).json({
+                    success: true,
+                    message: 'Products fetched successfully!',
+                    data: products
+                });
             }
             catch (error) {
-                res.status(500).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }
-    static updateProduct(req, res) {
+    static getProductById(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield product_service_1.ProductService.updateProduct(req.params.id, req.body);
-                if (result.success) {
-                    res.status(200).json(result);
+                const product = yield product_service_1.ProductService.getProductById(req.params.id);
+                if (!product) {
+                    throw new errorHandler_1.ApiError(404, 'Product not found');
                 }
-                else {
-                    res.status(404).json(result);
-                }
+                res.status(200).json({
+                    success: true,
+                    message: 'Product fetched successfully!',
+                    data: product
+                });
             }
             catch (error) {
-                res.status(400).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }
-    static deleteProduct(req, res) {
+    static updateProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield product_service_1.ProductService.deleteProduct(req.params.id);
-                if (result.success) {
-                    res.status(200).json(result);
+                yield product_validator_1.productSchema.validateAsync(req.body);
+                const product = yield product_service_1.ProductService.updateProduct(req.params.id, req.body);
+                if (!product) {
+                    throw new errorHandler_1.ApiError(404, 'Product not found');
                 }
-                else {
-                    res.status(404).json(result);
-                }
+                res.status(200).json({
+                    success: true,
+                    message: 'Product updated successfully!',
+                    data: product
+                });
             }
             catch (error) {
-                res.status(500).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }
-    static searchProducts(req, res) {
+    static deleteProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield product_service_1.ProductService.searchProducts(req.params.term);
-                res.status(200).json(result);
+                const product = yield product_service_1.ProductService.deleteProduct(req.params.id);
+                if (!product) {
+                    throw new errorHandler_1.ApiError(404, 'Product not found');
+                }
+                res.status(200).json({
+                    success: true,
+                    message: 'Product deleted successfully!',
+                    data: null
+                });
             }
             catch (error) {
-                res.status(500).json({ success: false, message: error.message });
+                next(error);
+            }
+        });
+    }
+    static searchProducts(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const searchTerm = req.query.searchTerm;
+                const products = yield product_service_1.ProductService.searchProducts(searchTerm);
+                res.status(200).json({
+                    success: true,
+                    message: `Products matching search term '${searchTerm}' fetched successfully!`,
+                    data: products
+                });
+            }
+            catch (error) {
+                next(error);
             }
         });
     }

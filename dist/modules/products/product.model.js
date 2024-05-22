@@ -19,14 +19,14 @@ const productSchema = new mongoose_1.Schema({
         inStock: { type: Boolean, required: true }
     }
 });
-productSchema.methods.toJSON = function () {
-    const product = this.toObject();
-    delete product.__v;
-    delete product._id;
-    // Remove _id fields from nested objects
-    product.variants.forEach(variant => delete variant._id);
-    delete product.inventory._id;
-    return product;
-};
+// productSchema.methods.toJSON = function () {
+//   const product = this.toObject();
+//   delete product.__v;
+//   delete product._id;
+//   // Remove _id fields from nested objects
+//   product.variants.forEach(variant => delete variant._id);
+//   delete product.inventory._id;
+//   return product;
+// };
 exports.Product = (0, mongoose_1.model)('Product', productSchema);
 exports.default = exports.Product;

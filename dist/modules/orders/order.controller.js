@@ -11,19 +11,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 const order_service_1 = require("./order.service");
+const order_validator_1 = require("./order.validator");
+const errorHandler_1 = require("../middlewares/errorHandler");
 class OrderController {
-    static createOrder(req, res) {
+    static createOrder(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield order_service_1.OrderService.createOrder(req.body);
-                res.status(201).json(result);
+                yield order_validator_1.orderSchema.validateAsync(req.body);
+                const order = yield order_service_1.OrderService.createOrder(req.body);
+                res.status(201).json({
+                    success: true,
+                    message: 'Order created successfully!',
+                    data: order
+                });
             }
             catch (error) {
-                res.status(400).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }
-    static getAllOrders(req, res) {
+    static getAllOrders(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { email } = req.query;
@@ -35,18 +42,25 @@ class OrderController {
                 });
             }
             catch (error) {
-                res.status(500).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }
-    static getOrdersByEmail(req, res) {
+    static getOrdersByEmail(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield order_service_1.OrderService.getOrdersByEmail(req.params.email);
-                res.status(200).json(result);
+                const order = yield order_service_1.OrderService.getOrdersByEmail(req.params.email);
+                if (!order) {
+                    throw new errorHandler_1.ApiError(404, 'Order not found');
+                }
+                res.status(200).json({
+                    success: true,
+                    message: 'Order fetched successfully!',
+                    data: order
+                });
             }
             catch (error) {
-                res.status(500).json({ success: false, message: error.message });
+                next(error);
             }
         });
     }

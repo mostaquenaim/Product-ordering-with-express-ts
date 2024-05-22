@@ -21,17 +21,17 @@ const productSchema = new Schema<IProductDocument>({
   }
 });
 
-productSchema.methods.toJSON = function () {
-  const product = this.toObject();
-  delete product.__v;
-  delete product._id;
+// productSchema.methods.toJSON = function () {
+//   const product = this.toObject();
+//   delete product.__v;
+//   delete product._id;
 
-  // Remove _id fields from nested objects
-  product.variants.forEach(variant => delete variant._id);
-  delete product.inventory._id;
+//   // Remove _id fields from nested objects
+//   product.variants.forEach(variant => delete variant._id);
+//   delete product.inventory._id;
 
-  return product;
-};
+//   return product;
+// };
 
 export const Product = model<IProductDocument>('Product', productSchema);
 
