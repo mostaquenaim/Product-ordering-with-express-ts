@@ -33,7 +33,8 @@ This is an E-Commerce API built with Node.js, Express, and MongoDB. The API allo
    PORT=5000
    DB_URL= <your mongodb URI>
 
-<h1>Running the Application</h1>
+## Installation
+
 1. **Start the server**
 
    ```bash
