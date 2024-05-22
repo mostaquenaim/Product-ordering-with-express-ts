@@ -1,4 +1,3 @@
-import { Model } from "mongoose";
 
 // Variant Interface
 export interface TVariant {

@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, model } from 'mongoose';
-import { TProduct, TVariant, TInventory } from './product.interface';
+import { Schema, Document, model } from 'mongoose';
+import { TProduct } from './product.interface';
 
 interface IProductDocument extends TProduct, Document {}
 

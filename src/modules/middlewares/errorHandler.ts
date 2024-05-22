@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { ValidationError } from 'joi';
 
 class ApiError extends Error {
@@ -10,7 +10,7 @@ class ApiError extends Error {
   }
 }
 
-export const errorHandler = (err: ApiError | ValidationError, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: ApiError | ValidationError, req: Request, res: Response) => {
   const statusCode = err instanceof ApiError ? err.status : 400;
   const message = err.message || 'Internal Server Error';
 
@@ -21,7 +21,7 @@ export const errorHandler = (err: ApiError | ValidationError, req: Request, res:
 };
 
 // To handle 404 errors for undefined routes
-export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
+export const notFoundHandler = (req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: 'Route not found'

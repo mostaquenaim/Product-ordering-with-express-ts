@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.post('/', ProductController.createProduct);
 router.get('/', ProductController.getAllProducts);
-router.get('/:id', ProductController.getProductById);
-router.put('/:id', ProductController.updateProduct);
-router.delete('/:id', ProductController.deleteProduct);
+router.get('/:productId', ProductController.getProductById);
+router.put('/:productId', ProductController.updateProduct);
+router.delete('/:productId', ProductController.deleteProduct);
 // router.get('/search/:term', ProductController.searchProducts);
 
 export const ProductRoutes = router;

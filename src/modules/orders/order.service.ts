@@ -45,10 +45,6 @@ export class OrderService {
   static async getOrdersByEmail(email: string) {
     const orders = await Order.find({ email });
     if (!orders.length) throw new ApiError(404, 'Order not found');
-    return {
-      success: true,
-      message: 'Orders fetched successfully for user email!',
-      data: orders
-    };
+    return orders
   }
 }

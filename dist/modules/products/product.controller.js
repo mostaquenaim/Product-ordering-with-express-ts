@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const product_service_1 = require("./product.service");
 const product_validator_1 = require("./product.validator");
-const errorHandler_1 = require("../middlewares/errorHandler");
 class ProductController {
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -48,10 +47,7 @@ class ProductController {
     static getProductById(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const product = yield product_service_1.ProductService.getProductById(req.params.id);
-                if (!product) {
-                    throw new errorHandler_1.ApiError(404, 'Product not found');
-                }
+                const product = yield product_service_1.ProductService.getProductById(req.params.productId);
                 res.status(200).json({
                     success: true,
                     message: 'Product fetched successfully!',
@@ -67,10 +63,7 @@ class ProductController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield product_validator_1.productSchema.validateAsync(req.body);
-                const product = yield product_service_1.ProductService.updateProduct(req.params.id, req.body);
-                if (!product) {
-                    throw new errorHandler_1.ApiError(404, 'Product not found');
-                }
+                const product = yield product_service_1.ProductService.updateProduct(req.params.productId, req.body);
                 res.status(200).json({
                     success: true,
                     message: 'Product updated successfully!',
@@ -85,10 +78,7 @@ class ProductController {
     static deleteProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const product = yield product_service_1.ProductService.deleteProduct(req.params.id);
-                if (!product) {
-                    throw new errorHandler_1.ApiError(404, 'Product not found');
-                }
+                yield product_service_1.ProductService.deleteProduct(req.params.productId);
                 res.status(200).json({
                     success: true,
                     message: 'Product deleted successfully!',

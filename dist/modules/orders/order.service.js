@@ -56,11 +56,7 @@ class OrderService {
             const orders = yield order_model_1.Order.find({ email });
             if (!orders.length)
                 throw new errorHandler_1.ApiError(404, 'Order not found');
-            return {
-                success: true,
-                message: 'Orders fetched successfully for user email!',
-                data: orders
-            };
+            return orders;
         });
     }
 }

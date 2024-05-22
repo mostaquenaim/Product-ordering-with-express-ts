@@ -8,7 +8,7 @@ class ApiError extends Error {
     }
 }
 exports.ApiError = ApiError;
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res) => {
     const statusCode = err instanceof ApiError ? err.status : 400;
     const message = err.message || 'Internal Server Error';
     res.status(statusCode).json({
@@ -18,7 +18,7 @@ const errorHandler = (err, req, res, next) => {
 };
 exports.errorHandler = errorHandler;
 // To handle 404 errors for undefined routes
-const notFoundHandler = (req, res, next) => {
+const notFoundHandler = (req, res) => {
     res.status(404).json({
         success: false,
         message: 'Route not found'

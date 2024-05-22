@@ -14,14 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductService = void 0;
 const product_model_1 = __importDefault(require("./product.model"));
+const errorHandler_1 = require("../middlewares/errorHandler");
 const createProduct = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const newProduct = new product_model_1.default(payload);
     yield newProduct.save();
-    return {
-        success: true,
-        message: "Product created successfully!",
-        data: newProduct
-    };
+    return newProduct;
 });
 const getAllProducts = (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
     let query = {};
@@ -39,38 +36,26 @@ const getAllProducts = (searchTerm) => __awaiter(void 0, void 0, void 0, functio
     const products = yield product_model_1.default.find(query);
     return products.map(product => product.toJSON());
 });
-const getProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const product = yield product_model_1.default.findById(id);
+const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield product_model_1.default.findById(productId);
     if (!product) {
-        return { success: false, message: "Product not found!" };
+        throw new errorHandler_1.ApiError(404, "Product not found!");
     }
-    return {
-        success: true,
-        message: "Product fetched successfully!",
-        data: product
-    };
+    return product;
 });
-const updateProduct = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedProduct = yield product_model_1.default.findByIdAndUpdate(id, payload, { new: true });
+const updateProduct = (productId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedProduct = yield product_model_1.default.findByIdAndUpdate(productId, payload, { new: true });
     if (!updatedProduct) {
-        return { success: false, message: "Product not found!" };
+        throw new errorHandler_1.ApiError(404, "Product not found!");
     }
-    return {
-        success: true,
-        message: "Product updated successfully!",
-        data: updatedProduct
-    };
+    return updatedProduct;
 });
-const deleteProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const deletedProduct = yield product_model_1.default.findByIdAndDelete(id);
+const deleteProduct = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+    const deletedProduct = yield product_model_1.default.findByIdAndDelete(productId);
     if (!deletedProduct) {
-        return { success: false, message: "Product not found!" };
+        throw new errorHandler_1.ApiError(404, "Product not found!");
     }
-    return {
-        success: true,
-        message: "Product deleted successfully!",
-        data: null
-    };
+    return deletedProduct;
 });
 const searchProducts = (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
     const products = yield product_model_1.default.find({
@@ -81,11 +66,7 @@ const searchProducts = (searchTerm) => __awaiter(void 0, void 0, void 0, functio
             { tags: { $in: [new RegExp(searchTerm, 'i')] } }
         ]
     });
-    return {
-        success: true,
-        message: `Products matching search term '${searchTerm}' fetched successfully!`,
-        data: products
-    };
+    return products;
 });
 exports.ProductService = {
     createProduct,

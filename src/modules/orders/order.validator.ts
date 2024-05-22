@@ -6,14 +6,14 @@ export const orderSchema = Joi.object({
       'string.base': 'Email should be a type of text',
       'string.email': 'Email must be a valid email address',
       'any.required': 'Email is a required field'
-    }),
+    }), 
   productId: Joi.string().hex().length(24).required()
     .messages({
       'string.base': 'Product ID should be a type of text',
       'string.hex': 'Product ID must be a valid hexadecimal string',
       'string.length': 'Product ID must be exactly {#limit} characters long',
       'any.required': 'Product ID is a required field'
-    }),
+    }), 
   price: Joi.number().positive().precision(2).required()
     .messages({
       'number.base': 'Price should be a type of number',

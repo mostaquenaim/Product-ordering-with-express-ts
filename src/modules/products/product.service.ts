@@ -1,14 +1,11 @@
 import Product from './product.model';
 import { TProduct } from './product.interface';
+import { ApiError } from '../middlewares/errorHandler';
 
 const createProduct = async (payload: TProduct) => {
     const newProduct = new Product(payload);
     await newProduct.save();
-    return {
-        success: true,
-        message: "Product created successfully!",
-        data: newProduct
-    };
+    return newProduct
 };
 
 const getAllProducts = async (searchTerm?: string) => {
@@ -28,40 +25,28 @@ const getAllProducts = async (searchTerm?: string) => {
     return products.map(product => product.toJSON());
 }
 
-const getProductById = async (id: string) => {
-    const product = await Product.findById(id);
+const getProductById = async (productId: string) => {
+    const product = await Product.findById(productId);
     if (!product) {
-        return { success: false, message: "Product not found!" };
+        throw new ApiError(404, "Product not found!");
     }
-    return {
-        success: true,
-        message: "Product fetched successfully!",
-        data: product
-    };
+    return product;
 };
 
-const updateProduct = async (id: string, payload: Partial<TProduct>) => {
-    const updatedProduct = await Product.findByIdAndUpdate(id, payload, { new: true });
+const updateProduct = async (productId: string, payload: Partial<TProduct>) => {
+    const updatedProduct = await Product.findByIdAndUpdate(productId, payload, { new: true });
     if (!updatedProduct) {
-        return { success: false, message: "Product not found!" };
+        throw new ApiError(404, "Product not found!");
     }
-    return {
-        success: true,
-        message: "Product updated successfully!",
-        data: updatedProduct
-    };
+    return updatedProduct
 };
 
-const deleteProduct = async (id: string) => {
-    const deletedProduct = await Product.findByIdAndDelete(id);
+const deleteProduct = async (productId: string) => {
+    const deletedProduct = await Product.findByIdAndDelete(productId);
     if (!deletedProduct) {
-        return { success: false, message: "Product not found!" };
+        throw new ApiError(404, "Product not found!");
     }
-    return {
-        success: true,
-        message: "Product deleted successfully!",
-        data: null
-    };
+    return deletedProduct;
 };
 
 const searchProducts = async (searchTerm: string) => {
@@ -73,11 +58,7 @@ const searchProducts = async (searchTerm: string) => {
             { tags: { $in: [new RegExp(searchTerm, 'i')] } }
         ]
     });
-    return {
-        success: true,
-        message: `Products matching search term '${searchTerm}' fetched successfully!`,
-        data: products
-    };
+    return products
 };
 
 export const ProductService = {
